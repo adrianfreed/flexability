@@ -88,19 +88,19 @@ void loop() {
     Keyboard.print("l");
   }
   if (button6.fallingEdge()) {
-    Keyboard.println("7");
+    Keyboard.print("7");
   }
   if (button7.fallingEdge()) {
-    Keyboard.println("9");
+    Keyboard.print("9");
   }
   if (button8.fallingEdge()) {
-    Keyboard.println("i");
+    Keyboard.print("i");
   }
   if (button9.fallingEdge()) {
-    Keyboard.println("m");
+    Keyboard.print("m");
   }
  if (button10.fallingEdge()) {
-    Keyboard.println(".");
+    Keyboard.print(".");
   }
 
  #ifdef RELEASEneeded
