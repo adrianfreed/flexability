@@ -1,43 +1,19 @@
+#include <Bounce2.h>
+#include <Mouse.h>
+
 /*  Cursor keys
- *  Teensy 3
+ *   for Teensy and USB Arduinos
+ *  
 
  
    
-   Select Keyboard/Mouse etc  from the "Tools > USB Type" menu
+   On Teensy: Select Keyboard/Mouse etc  from the "Tools > USB Type" menu
    
    AF July 2018
 
-   Apple's Keyboard mapping for cursor control:
-   
-  Move up  8 or numeric keypad 8
-  Move down K or numeric keypad 2
-  Move left U or numeric keypad 4
-  Move right  O or numeric keypad 6
-  Move diagonally down and to the left  J or numeric keypad 1
-  Move diagonally down and to the right L or numeric keypad 3
-  Move diagonally up and to the left  7 or numeric keypad 7
-  Move diagonally up and to the right 9 or numeric keypad 9
-
-  
-  Press the mouse button  I or numeric keypad 5
-  Hold the mouse button M or numeric keypad 0
-  Release the mouse button  . (period)
-  
-  https://support.apple.com/kb/ph25642?locale=en_US
-
-
-  Menu navigation with keys:
-
-    Control-F2 to put the focus on the menu bar.
-    
-    Move from menu to menu : Left Arrow, Right Arrow
-    Open a selected menu  : Return
-    Move to menu items in the selected menu : Up Arrow, Down Arrow
-    Jump to a menu item in the selected menu  : Type the menu item's name
-    Choose the selected menu item :Return
+ 
 */
 
-#include <Bounce.h>
 const int debounceTime = 20;  //mS
 //Bounce object handles contact chatter or "bounce", and simplifies state changes
 
@@ -69,6 +45,8 @@ void setup() {
   pinMode(8, INPUT_PULLUP);
   pinMode(9, INPUT_PULLUP);
  pinMode(10, INPUT_PULLUP);
+
+ Mouse.begin();
 }
 
 void loop() {
@@ -114,6 +92,36 @@ void loop() {
 
 
  #ifdef CANTWORK
+ /*
+  *   Apple's Keyboard mapping for cursor control:
+   
+  Move up  8 or numeric keypad 8
+  Move down K or numeric keypad 2
+  Move left U or numeric keypad 4
+  Move right  O or numeric keypad 6
+  Move diagonally down and to the left  J or numeric keypad 1
+  Move diagonally down and to the right L or numeric keypad 3
+  Move diagonally up and to the left  7 or numeric keypad 7
+  Move diagonally up and to the right 9 or numeric keypad 9
+
+  
+  Press the mouse button  I or numeric keypad 5
+  Hold the mouse button M or numeric keypad 0
+  Release the mouse button  . (period)
+  
+  https://support.apple.com/kb/ph25642?locale=en_US
+
+
+  Menu navigation with keys:
+
+    Control-F2 to put the focus on the menu bar.
+    
+    Move from menu to menu : Left Arrow, Right Arrow
+    Open a selected menu  : Return
+    Move to menu items in the selected menu : Up Arrow, Down Arrow
+    Jump to a menu item in the selected menu  : Type the menu item's name
+    Choose the selected menu item :Return
+  */
 //   THis doesn't work because Apple's accessibility extension doesn't work for externally
  //  attached keyboards 
 
