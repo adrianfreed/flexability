@@ -1,20 +1,27 @@
 #include <Bounce2.h>
 #include <Mouse.h>
 
-/*  Cursor keys
+/*  Cursor keys   (for replacing mouse/trackpad functions)
  *   for Teensy and USB Arduinos
- *  
-
- 
-   
+  
    On Teensy: Select Keyboard/Mouse etc  from the "Tools > USB Type" menu
    
    AF July 2018
 
    Active Low for these pins:
-   Pin     Function
-    0
- 
+   Pin      Function
+    0       North West
+    1       North
+    2       North East
+    3       West
+    4       East
+    5       South West
+    6       South
+    7       South East
+    8       Mouse Press
+    9      `Mouse Release
+    10      Mouse Click
+  
 */
 
 const int debounceTime = 20;  //mS
