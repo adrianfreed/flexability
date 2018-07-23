@@ -11,6 +11,9 @@
    
    AF July 2018
 
+   Active Low for these pins:
+   Pin     Function
+    0
  
 */
 
@@ -88,6 +91,16 @@ void loop() {
   }
   if (button7.fallingEdge()) {
     Mouse.move(moveDistance, moveDistance);  // move South East
+  }
+  
+ if (button8.fallingEdge()) {
+    Mouse.press();  // mouse button (left)
+  }
+ if (button9.fallingEdge()) {
+    Mouse.release();  // move button (left)
+  }
+if (button10.fallingEdge()) {
+    Mouse.click();  // move button (left)
   }
 
 
