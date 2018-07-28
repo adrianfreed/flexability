@@ -21,7 +21,8 @@
     8       Mouse Press
     9      `Mouse Release
     10      Mouse Click
-  
+
+  TODO repeat keys
 */
 
 const int debounceTime = 20;  //mS

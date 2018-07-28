@@ -19,10 +19,10 @@ struct  padVoltages {  int l; int t; int r; int b; } ;
 
 struct padVoltages padRead() {
       struct padVoltages r;
-      r.l = analogRead(A0);
-      r.t = analogRead(A1);
-      r.b = analogRead(A2);
-      r.r = analogRead(A3);
+      r.l = analogRead(A0);     r.l = analogRead(A0);     r.l = analogRead(A0);     r.l = analogRead(A0);
+      r.t = analogRead(A1); r.t = analogRead(A1); r.t = analogRead(A1); r.t = analogRead(A1); r.t = analogRead(A1);
+      r.b = analogRead(A2); r.b = analogRead(A2); r.b = analogRead(A2); r.b = analogRead(A2); r.b = analogRead(A2);
+      r.r = analogRead(A3); r.r = analogRead(A3); r.r = analogRead(A3); r.r = analogRead(A3); r.r = analogRead(A3);
   return r;
 }
 
@@ -78,8 +78,8 @@ Serial.print(p.t); Serial.print(" ");
 Serial.print(p.b);
 Serial.println(" ");
 }
- y1 = 100.0f * (p.t -p.r)/((float)p.l-p.r);
-y2 = 100.0f * (p.b -p.r)/((float)p.l-p.r);
+ y1 = 10.0f/8.0f *(100.0f * (p.t -p.r)/((float)p.l-p.r) - 20.0f);
+ y2 =  10.0f/8.0f *(100.0f * (p.b -p.r)/((float)p.l-p.r) - 20.0f);
 
 pinMode(bottompin, INPUT); 
 pinMode(rightpin, INPUT); 
@@ -89,12 +89,12 @@ pinMode(leftpin, OUTPUT); digitalWrite(leftpin, LOW);
 p = padRead(); 
 p = padRead(); 
 
-if(1) //p.b<(7205))
+if(p.b<(7205))
 {
   if(state==0)
  {
-  // (int)((x1/20)*5 + y2/20)
-    //Keyboard.print("abcdefghijklmnopqrstuvwxyz0123456789"[(int)(x1+x2)/10/2]);
+   // (int)((x1/20)*5 + y2/20)
+    Keyboard.print("abcdeefghhijklmnnopqqrstuvvwxyzz0123456789"[(int)((x1+x2)/10/2) + 10* ((int)(y1+y2)/2/33)]);
  }
  state = 1;
   Serial.print("y1 "); Serial.print(y1); Serial.print(" ");
