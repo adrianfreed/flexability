@@ -89,12 +89,12 @@ pinMode(leftpin, OUTPUT); digitalWrite(leftpin, LOW);
 p = padRead(); 
 p = padRead(); 
 
-if(p.b<(7205))
+if(p.b< 7400) //(7205))
 {
   if(state==0)
  {
-   // (int)((x1/20)*5 + y2/20)
-    Keyboard.print("abcdeefghhijklmnnopqqrstuvvwxyzz0123456789"[(int)((x1+x2)/10/2) + 10* ((int)(y1+y2)/2/33)]);
+    const int nHoriz = 10,  nVertic = 3;
+    Keyboard.print("abcdeefghhijklmnnopqqrstuvvwxyzz0123456789"[(int)((x1+x2)/(100/nHoriz)/2) + nHoriz* ((int)(y1+y2)/2/(100/nVertic))]);
  }
  state = 1;
   Serial.print("y1 "); Serial.print(y1); Serial.print(" ");
