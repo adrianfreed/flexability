@@ -36,6 +36,10 @@ const int faQuadLast = fa3Z;
 const char *boardName = "FlexAbility T2.0";
 const int faDigitalPins[] = {21,20,19,18,17,16,15,14,13,12,11,22 };
 const int faAnalogPins[] = {A0,A1,A2, A3, A4, A5, A6, A7, A8, A9, A10, A11};
+const int faTouchPins[] = {-1,-1,-1,-1,{-1,-1,-1,-1,{-1,-1,-1,-1};
+const bool faOpampBuffer[] ={false, false, false, false, false, false, false, false, false, false, false, false };
+const float faPullupResistance = 35000.0f; // Ohms
+const float  faPowerSupply = 5.0f ; //Volts
    #elif defined(__MKL26Z64__)  
 const int faPairLast = fa2B;      
 const int faQuadLast = fa2Z;
@@ -43,10 +47,26 @@ const int faQuadLast = fa2Z;
 const char *boardName ="FlexAbility LC";
 const int faDigitalPins[] = {0,1,3,4,5,6,9,10 };
 const int faAnalogPins[] = {A11,A10,A6, A7, A9, A8, A3, A2};
+const int faTouchPins[] = {0,1,3,4, 23, 22, 17, 16};
 
+const bool faOpampBuffer[] ={true, true, true, true, false, false, false, false };
+const float faPullupResistance = 50000.0f; // Ohms    20k to 50k according to datasheet
+const float  faPowerSupply = 3.3f ; //Volts
 
     #elif defined(__MK20DX256__)       
-const char *boardName = "FlexAbility Teensy 3.2";
+const char *boardName ="FlexAbility T3.2";
+const int faDigitalPins[] = {0,1,3,4,5,6,9,10 };
+const int faAnalogPins[] = {A11,A10,A6, A7, A9, A8, A3, A2};
+const int faTouchPins[] = {0,1,-1,-1, 23, 22, 17, 16};
+
+const bool faOpampBuffer[] ={true, true, true, true, false, false, false, false };
+const float faPullupResistance = 50000.0f; // Ohms  20k to 50k according to datasheet
+const float  faPowerSupply = 3.3f; //Volts
+
+
+const int faPairLast = fa2B;      
+const int faQuadLast = fa2Z;
+
     #elif defined(__MK64FX512__)
  const char *boardName = "FlexAbility Teensy 3.5";
    #elif defined(__MK66FX1M0__)
@@ -80,7 +100,12 @@ int faAnalogReadPair(faPairs c, bool pullup)
       pullupPin(faDigitalPins[c*2+ 1] );
     else
       floatPin(faDigitalPins[c*2+ 1]);
-
+if(! faOpampBuffer[c*2+1])
+{
+  // give the capacitor in the adc time to charge if the input impedance is high
+  v = analogRead(faAnalogPins[c*2 + 1]);
+  delayMicroseconds(500);
+}
     v = analogRead(faAnalogPins[c*2 + 1]);
     floatPin(faDigitalPins[c*2+ 0]);
     if(pullup)floatPin(faDigitalPins[c*2+ 1]);
@@ -99,6 +124,12 @@ int faAnalogReadQuad(faQuads c, bool pullup)
       pullupPin(faDigitalPins[c] );
     else
           floatPin(faDigitalPins[c]);
+    if(! faOpampBuffer[c+1])
+{
+  // give the capacitor in the adc time to charge if the input impedance is high
+  v = analogRead(faAnalogPins[c]);
+  delayMicroseconds(500);
+}
     v = analogRead(faAnalogPins[c]);
     if(pullup) floatPin(faDigitalPins[c]);
 
@@ -107,6 +138,27 @@ int faAnalogReadQuad(faQuads c, bool pullup)
  
 }
 
+int faTouchRead(faQuads c)
+{ 
+  int rv = -1;
+ #if defined(TEENSYDUINO) && !defined(__AVR_ATmega32U4__)
+  if(faTouchPins[c] !=-1)
+        rv = touchRead(faTouchPins[c]);
+ #endif
+  return rv;
+}
+int32_t faAdcToResistance(int v, int maxvalue, float powervoltage, float pullupresistance)
+{
+  int32_t rv = -1;
+  if(v < 0.95f*maxvalue)
+  {
+    float t = (float) v/maxvalue;
+     rv = t* pullupresistance / (1.0f-t);
+
+  }
+ 
+  return rv;
+}
 // adc values are scaled from 0 to 1000 
 static void showValue(int adcvalue,  char *label)
 {
@@ -125,6 +177,29 @@ static void showfaQuadValue(faQuads c)
 {
   if(c<=faQuadLast)
     showValue(faAnalogReadQuad(c, true), faConnectorQuadlabels[c]);
+}
+static void showfaQuadcapValue(faQuads c)
+{
+  int v;
+  if(c<=faQuadLast)
+   { 
+      v =faTouchRead(c);
+      displayPrint(faConnectorQuadlabels[c], v);
+
+   serialPrint(faConnectorQuadlabels[c], v);
+   }
+}
+static void showfaQuadresistanceValue(faQuads c)
+{
+  int v;
+  if(c<=faQuadLast)
+   { 
+      v =faAnalogReadQuad(c, true);
+      displayResistancePrint(faConnectorQuadlabels[c], faAdcToResistance(v, 1023,faPowerSupply, faPullupResistance ));
+
+   serialPrint(faConnectorQuadlabels[c], v);
+  }
+  
 }
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -151,12 +226,30 @@ const int delaytime=100;
 void serialPrint(char *label, int v){
   if(debugging) { Serial.print (label);Serial.print (" ");  Serial.print(v);  if(v<990) Serial.print("*"); Serial.println();}
 }
- void  displayPrint(char *label, int v)
+void  displayPrint(char *label, int v)
 {
   static int line = 0;
    display.print(label); display.print(" ");  display.print(v<1000?" ": "");display.print(v<100?" ": "");display.print(v<10?" ": ""); display.print(v);  display.print(v<990?"*": " "); 
    if(line %= 2) display.println(); else display.print("   ");
 }
+void  displayResistancePrint(char *label, int32_t v)
+{
+  static int line = 0;
+  char *unit = "o";
+  if(v>=1000)
+  {  v /= 1000;
+     unit = "K";
+  }else if (v>=1000)
+   {
+      v /= 1000;
+      unit = "M";
+   }
+   
+   display.print(label); display.print(" ");  display.print(v<1000?" ": "");display.print(v<100?" ": "");display.print(v<10?" ": ""); display.print(v); display.print(unit);
+   display.print(v<-1?"*": " "); 
+   if(line %= 2) display.println(); else display.print("   ");
+}
+
 void loop(){
   display.clearDisplay();
   if(delaytime!=0) delay(delaytime); // establish a settlement time before the read
@@ -173,16 +266,31 @@ void loop(){
       showfaPairValue((faPairs ) i);
 #endif
 
+#define ALLCAPSENSE
+#ifdef ALLCAPSENSE
+  // show all the capsense for this board
+ for(int i=0;i<=faQuadLast;++i)
+      showfaQuadcapValue((faQuads ) i);
+#endif
+#define xALLRESISTANCE
+#ifdef ALLRESISTANCE
+  // show all the capsense for this board
+ for(int i=0;i<=faQuadLast;++i)
+      showfaQuadresistanceValue((faQuads ) i);
+#endif
+
+
 #ifdef ALLQUADS
   // show all the quads for this board
  for(int i=0;i<=faQuadLast;++i)
       showfaQuadValue((faQuads ) i);
 #endif
-
+#ifdef SOMEOFEACH
  for(int i=0;i<2;++i)
       showfaPairValue((faPairs ) i);
 for(int i = fa2W;i<= faQuadLast;++i)
       showfaQuadValue((faQuads ) i);
+#endif
 
 // for(int i=0;i<8;++i)
  //     { Serial.print(i);Serial.print(" "), Serial.println(analogRead(faAnalogPins[i]  )); }
