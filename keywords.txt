@@ -1,0 +1,4 @@
+faAnalogReadPair	KEYWORD1
+faAnalogReadQuad	KEYWORD1
+faTouchRead	KEYWORD1
+faAdcToResistance	KEYWORD1
