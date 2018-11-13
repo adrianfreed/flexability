@@ -102,6 +102,8 @@ int faAnalogReadPair(faPairs c, bool pullup)
       pullupPin(faDigitalPins[c*2+ 1] );
     else
       floatPin(faDigitalPins[c*2+ 1]);
+      delayMicroseconds(10);
+
 if(! faOpampBuffer[c*2+1])
 {
   // give the capacitor in the adc time to charge if the input impedance is high
