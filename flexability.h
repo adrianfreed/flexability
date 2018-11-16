@@ -24,5 +24,6 @@ extern const float  faPowerSupply; //Volts
 extern int faAnalogReadPair(faPairs c, bool pullup);
 extern int faAnalogReadQuad(faQuads c, bool pullup);
 extern int faTouchRead(faQuads c);
+extern bool faSwitchPressedPair(faPairs c);
 
 extern int32_t faAdcToResistance(int v, int maxvalue, float powervoltage, float pullupresistance);

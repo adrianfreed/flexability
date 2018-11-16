@@ -118,6 +118,13 @@ if(! faOpampBuffer[c*2+1])
   return v;
  
 }
+
+bool faSwitchPressedPair(faPairs c)
+{
+    int v = faAnalogReadPair(c, true);
+    return (v>=0) && (v<200);
+}
+
 int faAnalogReadQuad(faQuads c, bool pullup)
 {
   int v = -1;
