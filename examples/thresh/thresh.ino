@@ -1,9 +1,9 @@
-/* UART Example, any character received on either the real
-   serial port, or USB serial (or emulated serial to the
-   Arduino Serial Monitor when using non-serial USB types)
-   is printed as a message to both ports.
+/*
+Quick test of new chip that does debouncing and thresholding
+of variable resistances.
+The chips 6 switch outputs are hooked up
+to a row of pins on a Teensy. (15-22)
 
-   This example code is in the public domain.
 */
 
 
@@ -12,7 +12,7 @@ void setup() {
   pinMode(22,INPUT);
   pinMode(21,INPUT);
   pinMode(20,INPUT);
- pinMode(17,INPUT);
+  pinMode(17,INPUT);
   pinMode(16,INPUT);
   pinMode(15,INPUT);
   
@@ -33,4 +33,3 @@ void loop() {
     Serial.print(digitalRead(15));
     Serial.println(" ");
 }
-
